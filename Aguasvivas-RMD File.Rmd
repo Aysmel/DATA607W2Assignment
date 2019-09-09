@@ -1,0 +1,41 @@
+---
+title: "DATA 607 - Week 2 Assignment"
+author: "Aysmel Aguasvivas"
+date: "9/8/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Week 2 Assignment
+
+```{r}
+library(DBI)
+
+mydb = dbConnect(RMySQL::MySQL(),
+                 dbname ='movies',
+                 host = '',        #must provide IP address
+                 port = 3306,      #edit port if necessary
+                 user='',          #must provide user, usually 'root'
+                 password='')      #must provide password for above user
+
+info <- dbGetQuery(mydb,
+                   "SELECT gueUserID,
+                      movName,
+                      rating
+                    FROM review
+                      LEFT JOIN guest
+                        ON gueUserID = revGueUserID
+                      LEFT JOIN movie
+                        ON revMovID = movID")
+
+summary(info)
+head(info)
+```
+
+```{r}
+library(ggplot2)
+ggplot(info, aes(y=rating, x=movName)) + geom_boxplot()
+```
